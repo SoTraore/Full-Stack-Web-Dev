@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Hey! It's a <%= final.data.data1 %>,  so it's time to <%= final.data.data2 %>.</h1>
+
+    <h1><%= final.object.title %></h1>
+    <p>Current second : <%= final.object.seconds%></p>
+    <% if (final.object.seconds%2 ==0) { %>
+    <ul>
+        <% for (let i=0; i<final.object.items.length; i++) { %>
+        <li><%= final.object.items[i] %></li>
+        <% } %>
+    </ul>
+    <% } else { %>
+        <p>No items to display</p>
+    <% } %>
+    <div>
+        <%- final.object.htmlContent %>
+    </div>
+    <div>
+        <h1>Sending from client to server</h1>
+        <form action="/welcome" method="POST">
+            <input type="text" name="fname"><br><br>
+            <input type="text" name="lname"><br><br>
+            <input type="submit" value="OK">
+        </form>
+    </div>
+    <%- include('footer.ejs'); %>
+</body>
+</html>
