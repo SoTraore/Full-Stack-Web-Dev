@@ -24,14 +24,15 @@ app.get('/contact', (req, res)=>{
 
 app.get('/about', (req,res)=>{
   res.render('about.ejs');
-})
+});
 
 app.post("/contact", (req, res)=>{
   let name = req.body.name;
   let email = req.body.email;
   let text = req.body.text;
 
-  res.render('result.ejs',{name, email, text});
+  res.render('message.ejs',{name, email, text});
+  // res.redirect('/message');
 });
 
 app.listen(port, () => {
