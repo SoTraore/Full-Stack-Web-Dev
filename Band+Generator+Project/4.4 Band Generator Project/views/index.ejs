@@ -6,8 +6,8 @@
     Change the h1 to show the adjective and noun.
     But when the user first goes on the website and there is no adjective and noun, 
     Show the default h1 below -->
-<% if (locals.value) { %>
-<h1><%= value %></h1>
+<% if (locals.adjective && locals.noun1) { %>
+<h1><%= adjective %> , <%= noun1 %></h1>
 <% } else { %>
 <h1>Welcome to the random Generator 👍.</h1>
 <% } %>

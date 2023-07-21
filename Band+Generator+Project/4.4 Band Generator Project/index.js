@@ -36,10 +36,14 @@ app.post("/submit", (req, res) => {
   let year = date.getFullYear();
 
   let length = adj.length ;
-  let index = getRandomInt(0, length);
-  let value = adj[index];
+  let index = getRandomInt(0, length-1);
+  let adjective = adj[index];
 
-  res.render("index.ejs", {year, value});
+  let length1 = noun.length ;
+  let index1 = getRandomInt(0, length1-1);
+  let noun1 = noun[index1];
+
+  res.render("index.ejs", {year, adjective, noun1});
 
 });
 
