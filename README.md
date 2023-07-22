@@ -1,4 +1,4 @@
-# Project-For-Learning
+# Projects For Learning Js Technologies
 
 These are several simple projects used to learn technologies they come from Angelo Yu training.
 
