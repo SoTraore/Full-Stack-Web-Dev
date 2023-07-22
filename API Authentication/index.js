@@ -1,59 +1,117 @@
 import express from "express";
 import axios from "axios";
+import secret from "./secret.js" 
+import bodyParser from "body-parser";
 
 const app = express();
 const port = 3000;
-const API_URL = "https://secrets-api.appbrewery.com/";
+const API_URL = "https://secrets-api.appbrewery.com";
+
+app.use(express.static("public"));
+app.use(bodyParser.urlencoded({extended:true}));
 
 //TODO 1: Fill in your values for the 3 types of auth.
-const yourUsername = "";
-const yourPassword = "";
-const yourAPIKey = "";
-const yourBearerToken = "";
+const yourUsername = secret.username;
+const yourPassword = secret.password;
+const yourAPIKey = secret.apiKey;
+const yourBearerToken = secret.bearerToken;
 
 app.get("/", (req, res) => {
   res.render("index.ejs", { content: "API Response." });
 });
 
-app.get("/noAuth", (req, res) => {
-  //TODO 2: Use axios to hit up the /random endpoint
-  //The data you get back should be sent to the ejs file as "content"
-  //Hint: make sure you use JSON.stringify to turn the JS object from axios into a string.
+app.get("/noAuth", async (req, res) => {
+  try {
+    let response = await axios.get(`${API_URL}/random`);
+    let result = response.data ;
+    res.render('index.ejs', {content: JSON.stringify(result)});
+  }
+  catch (error) {
+    res.render('index.ejs', {error})
+  }
+
 });
 
-app.get("/basicAuth", (req, res) => {
-  //TODO 3: Write your code here to hit up the /all endpoint
-  //Specify that you only want the secrets from page 2
-  //HINT: This is how you can use axios to do basic auth:
+app.get("/basicAuth", async (req, res) => {
   // https://stackoverflow.com/a/74632908
-  /*
-   axios.get(URL, {
-      auth: {
-        username: "abc",
-        password: "123",
+
+    try {
+      let response = await axios.get(`${API_URL}/all?page=6`, {
+        auth : {
+          username: yourUsername,
+          password: yourPassword,
+        }
+      });
+
+      let result = response.data ;
+      res.render('index.ejs', {content: JSON.stringify(result)});
+    }
+    catch (error) {
+      res.render('index.ejs', {error})
+    }
+});
+
+app.get("/apiKey", async (req, res) => {
+  try {
+    let response = await axios.get(`${API_URL}/filter?score=5&apiKey=${yourAPIKey}`, {
+      auth : {
+        username: yourUsername,
+        password: yourPassword
+      }
+    });
+    
+    let result = response.data ;
+    res.render('index.ejs', {content: JSON.stringify(result)});
+  }
+  catch (error) {
+    res.render('index.ejs', {error})
+  }
+
+});
+
+app.get("/bearerToken", async (req, res) => {
+  // https://stackoverflow.com/a/52645402
+  try {
+    const userSecretsResponse = await axios.get(`${API_URL}/secrets/1`, {
+      headers: {
+        Authorization: `Bearer ${yourBearerToken}`,
       },
     });
-  */
+  
+    const userSecretsData = userSecretsResponse.data;
+    res.render('index.ejs', { content: JSON.stringify(userSecretsData) });
+  } catch (error) {
+    res.render('index.ejs', { error });
+  }
+  
 });
 
-app.get("/apiKey", (req, res) => {
-  //TODO 4: Write your code here to hit up the /filter endpoint
-  //Filter for all secrets with an embarassment score of 5 or greater
-  //HINT: You need to provide a query parameter of apiKey in the request.
+app.get('/postSecret', (req, res)=> {
+  res.render('add.ejs');
 });
 
-app.get("/bearerToken", (req, res) => {
-  //TODO 5: Write your code here to hit up the /secrets/{id} endpoint
-  //and get the secret with id of 42
-  //HINT: This is how you can use axios to do bearer token auth:
-  // https://stackoverflow.com/a/52645402
-  /*
-  axios.get(URL, {
-    headers: { 
-      Authorization: `Bearer <YOUR TOKEN HERE>` 
+app.post('/postSecret', async (req,res)=>{
+  let my_secret = req.body.secret ;
+  let my_score = req.body.secret ;
+
+  const postData = {
+    secret: my_secret,
+    score: my_score,
+  };
+  
+  // Perform the POST request with the Bearer Token in the header
+  axios.post(`${API_URL}/secrets`, postData, {
+    headers: {
+      Authorization: `Bearer ${yourBearerToken}`,
     },
+  }).then((response) => {
+    let data = response.data;
+    console.log(data);
+    res.render("add.ejs", {data});
+  }).catch((error) => {
+    console.error("Error:", error);
   });
-  */
+
 });
 
 app.listen(port, () => {

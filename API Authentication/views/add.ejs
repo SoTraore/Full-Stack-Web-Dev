@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <% if (!locals.data) { %>
+        <h1>Post a secret on the appbrewery secret database.</h1>
+        <form action="/postSecret" method="POST">
+            <input type="text" name="secret"><br><br>
+            <input type="text" name="score"><br><br>
+            <button>Send Secret</button>
+        </form>
+    <% } else { %>
+        <div>
+            <h2>The data has been added !</h2>
+            <p><%= data %></p>
+        </div>
+    <% } %>
+</body>
+</html>

@@ -55,9 +55,20 @@
   <button id="bearerToken" onclick="window.location.href='/bearerToken'">Bearer Token</button>
 
   <div class="response-area">
+    <% if (locals.content) { %>
     <p>
       <%=content%>
     </p>
+    <% } else if (locals.error) { %>
+    <p>
+      <%= error.message %>
+    </p>
+    <% } %>
+  </div>
+  <div>
+    <button>
+      <a href="/postSecret">Add a secret</a>
+    </button>
   </div>
 </body>
 
