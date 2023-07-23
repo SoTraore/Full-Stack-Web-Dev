@@ -9,17 +9,19 @@ const contactContent = "Scelerisque eleifend donec pretium vulputate sapien. Rho
 
 const app = express();
 
+let compose = [] ;
+
 app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 
 app.get("/", (req, res) => {
-  res.render("home", { startingContent: homeStartingContent });
+  res.render("home", { compose, startingContent: homeStartingContent });
 });
 
 app.get("/home", (req, res) => {
-  res.redirect("/");
+  res.render("home", { compose, startingContent: homeStartingContent });
 });
 
 app.get('/contact', (req, res) => {
@@ -30,8 +32,13 @@ app.get('/about', (req, res) => {
   res.render("about", { aboutContent });
 });
 
-app.get('/post', (req, res) => {
-  res.render("post");
+app.get('/post/:id', (req, res) => {
+  const id = req.params.id;
+  if (id < compose.length) {
+    res.render("post", { title: compose[id].title, message: compose[id].message });
+  } else {
+    res.sendStatus(404);
+  }
 });
 
 app.get('/compose', (req, res) => {
@@ -39,7 +46,11 @@ app.get('/compose', (req, res) => {
 });
 
 app.post('/post', (req, res) => {
-  res.render("contact");
+  let title = req.body.title;
+  let message = req.body.message;
+  compose.push({title, message});
+
+  res.render("home", { compose, startingContent: homeStartingContent });
 });
 
 app.listen(3000, () => {

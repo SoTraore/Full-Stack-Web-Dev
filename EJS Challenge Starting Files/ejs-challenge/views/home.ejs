@@ -1,5 +1,19 @@
-<%- include("header.ejs"); %>
+<%- include("./partials/header.ejs"); %>
 
-<%= startingContent  %>
+<h1>Home</h1>
+<p><%= startingContent  %></p>
 
-<%- include("footer.ejs"); %>
+<% if (locals.compose) { %>
+    <% for (let i=0; i<compose.length; i++) { %>
+        <div>
+            <h2><%= compose[i].title %></h2>
+            <p><%= String(compose[i].message).slice(0, 100) %>...<a href="post/<%=i%>">Read more</a></p>
+        </div>
+    <% } %>
+<% } %>
+
+<form action="/compose">
+    <button>Create a new post</button>
+</form>
+
+<%- include("./partials/footer.ejs"); %>
