@@ -12,16 +12,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+let path1 = join(__dirname, "/public/index.html");
 
 app.get("/", (req, res) => {
-    const path1 = join(__dirname, "/public/index.html");
-    console.log(__dirname);
     res.sendFile(path1);
 });
 
 app.post("/check", (req, res) => {
     const text = req.body.password;
-    const path1 = (text === secret) ? join(__dirname, "/public/secret.html") : join(__dirname, "/public/index.html");
+    path1 = (text === secret) ? join(__dirname, "/public/secret.html") : join(__dirname, "/public/index.html");
     res.sendFile(path1);
 });
 
