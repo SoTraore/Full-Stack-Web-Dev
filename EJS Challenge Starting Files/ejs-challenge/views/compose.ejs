@@ -2,13 +2,15 @@
 
 <div>
     <h1>Compose</h1>
-    <form action="/post" method="POST">
-        <label for="title">Title</label><br>
-        <input type="text" name="title" required><br><br>
-        <label for="message">Message</label><br>
-        <textarea name="message" id="message" cols="30" rows="10" required></textarea><br><br>
-        <button>Post</button>
-    </form>
+    <div class="form-group">
+        <form action="/post" method="POST">
+        <label for="title">Title</label>
+        <input type="text" name="title" class="form-control" id="title" required><br>
+        <label for="message">Message</label>
+        <textarea class="form-control" id="message" name="message" rows="5"></textarea><br>
+        <button type="submit" class="btn btn-primary">Publish</button>
+        </form>
+    </div>
 </div>
 
 <%- include("./partials/footer.ejs"); %>
