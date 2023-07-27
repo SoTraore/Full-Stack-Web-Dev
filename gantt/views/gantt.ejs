@@ -1,12 +1,13 @@
 <%- include("partials/header.ejs"); %>
-
-<div class="home-body">
+<%- include("partials/side.ejs") %>
+<div class="home-body" id="capture-area">
+    <br>
     <% if (locals.operation && locals.dateDebut && locals.dateFinSouhaitee && locals.count) { %>
         <h1>Gantt Prévisionnel</h1>
         <table>
             <thead>
                 <tr>
-                    <th>Opération</th><th>Date de début</th><th>Date de fin réelle</th><th>Semaine de début</th><th>Semaine de fin réelle</th>
+                    <th>Opération</th><th>Date de début</th><th>Date de fin souhaitée</th><th>Semaine de début</th><th>Semaine de fin souhaitée</th>
                 </tr>
             </thead>
             <tbody>
@@ -28,22 +29,84 @@
         <table>
             <thead>
                 <tr>
-                    <th>Opération</th><th>Date de début</th><th>Date de fin souhaitée</th><th>Semaine de début</th><th>Semaine de fin souhaitée</th>
+                    <th>Opération</th><th>Date de début</th><th>Date de fin réelle</th><th>Semaine de début</th><th>Semaine de fin réelle</th>
                 </tr>
             </thead>
             <tbody>
         <% for (let i=0; i<count; i++) { %>
             <tr>
-                <td><%= operation[i] %></td>
-                <td><%= dateDebut[i] %></td>
-                <td><%= dateFinReelle[i] %></td>
-                <td><%= weekDebut[i] %></td>
-                <td><%= weekFinReelle[i] %></td>
+                <% if (weekFinReelle[i] > weekFinSouhaitee[i]) { %>
+                    <td class="red"><%= operation[i] %></td>
+                    <td class="red"><%= dateDebut[i] %></td>
+                    <td class="red"><%= dateFinReelle[i] %></td>
+                    <td class="red"><%= weekDebut[i] %></td>
+                    <td class="red"><%= weekFinReelle[i] %></td>
+                <% } else { %>
+                    <td class="green"><%= operation[i] %></td>
+                    <td class="green"><%= dateDebut[i] %></td>
+                    <td class="green"><%= dateFinReelle[i] %></td>
+                    <td class="green"><%= weekDebut[i] %></td>
+                    <td class="green"><%= weekFinReelle[i] %></td>
+                <% } %>
             </tr>
         <% } %>
         </tbody>
     </table>
     <% } %>
 </div>
+<br>
+
+
+<!-- An empty canvas element to draw the captured image -->
+<canvas id="canvas" style="display: none;"></canvas>
+
+<script>
+    // Function to capture the element with same quality
+    function captureElement() {
+        const captureArea = document.getElementById('capture-area');
+
+        html2canvas(captureArea, {
+            useCORS: true, // Enable CORS to capture external images
+            scale: 2, // Use scale of 1 for original resolution
+        }).then(canvas => {
+            // Create a new window to display the captured image
+            const newWindow = window.open();
+            newWindow.document.body.appendChild(canvas);
+        });
+    }
+
+    // Call the captureElement function when needed, e.g., on button click
+    const captureButton = document.getElementById('capture-button');
+    captureButton.addEventListener('click', captureElement);
+
+    // Function to download the captured image
+    function downloadImage() {
+        const captureArea = document.getElementById('capture-area');
+
+        html2canvas(captureArea, {
+            useCORS: true, // Enable CORS to capture external images
+            scale: 1, // Use scale of 1 for original resolution
+        }).then(canvas => {
+            // Convert the canvas to a data URL (PNG format)
+            const dataURL = canvas.toDataURL('image/png');
+
+            // Create a link and simulate a click to trigger the download
+            const link = document.createElement('a');
+            link.href = dataURL;
+            link.download = 'captured_image.png'; // Set the filename for the download
+            link.click();
+        });
+    }
+
+    // Call the downloadImage function when the button is clicked
+    const downloadButton = document.getElementById('download-button');
+    downloadButton.addEventListener('click', downloadImage);
+
+    // Function to download the printable content as PDF
+    function downloadPDF() {
+        // Open the print dialog to display the printable content
+        window.print();
+    }
+</script>
 
 <%- include("partials/footer.ejs"); %>
