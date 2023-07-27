@@ -1,0 +1,78 @@
+<%- include("partials/header.ejs"); %>
+<div class="home-body">
+    <form action="/create" method="POST">
+        <table id="gantt-table" class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Opérations</th>
+                    <th scope="col">Date de début</th>
+                    <th scope="col">Date de fin souhaitée</th>
+                    <th scope="col">Date de fin réelle</th>
+                </tr>
+            </thead>
+            <tbody class="table-tbody" id="table-body">
+                <tr class="table-tr">
+                    <th scope="row"><input type="text" name="operation0"></th>
+                    <td><input type="date" name="dateDebut0"></td>
+                    <td><input type="date" name="dateFinSouhaitee0"></td>
+                    <td><input type="date" name="dateFinReelle0"></td>
+                </tr>
+            </tbody>
+        </table>
+        <input type="number" name="rowCount" id="rowCountInput" value="1" hidden>
+        <table>
+            <tr class="row0">
+                <th scope="row"></th>
+                <td><button type="button" id="add-new">Add a new row</button></td>
+                <td><button type="button" id="del-elt">Delete last row</button></td>
+                <td><button type="submit">Submit</button></td>
+            </tr>
+        </table>
+    </form>
+    <br>
+</div>
+
+<script>
+    let tableBody = document.getElementById('table-body');
+    let addButton = document.getElementById('add-new');
+    let delButton = document.getElementById('del-elt');
+    let rowCountInput = document.getElementById('rowCountInput');
+
+    addButton.addEventListener('click', () => {
+        let row = document.createElement('tr');
+        row.setAttribute("id", `row${rowCountInput.value}`);
+
+        let input1 = document.createElement('td');
+        let input2 = document.createElement('td');
+        let input3 = document.createElement('td');
+        let input4 = document.createElement('td');
+
+        let operationName = "operation" + rowCountInput.value;
+        let dateDebutName = "dateDebut" + rowCountInput.value;
+        let dateFinSouhaiteeName = "dateFinSouhaitee" + rowCountInput.value;
+        let dateFinReelleName = "dateFinReelle" + rowCountInput.value;
+
+        input1.innerHTML = `<input type="text" name="${operationName}">`;
+        input2.innerHTML = `<input type="date" name="${dateDebutName}">`;
+        input3.innerHTML = `<input type="date" name="${dateFinSouhaiteeName}">`;
+        input4.innerHTML = `<input type="date" name="${dateFinReelleName}">`;
+
+        row.appendChild(input1);
+        row.appendChild(input2);
+        row.appendChild(input3);
+        row.appendChild(input4);
+
+        tableBody.appendChild(row);
+        rowCountInput.value++;
+    });
+
+    delButton.addEventListener('click', () => {
+        if (rowCountInput.value > 1) {
+            let elt = document.getElementById(`row${rowCountInput.value - 1}`);
+            elt.remove();
+            rowCountInput.value--;
+        }
+    });
+</script>
+
+<%- include("partials/footer.ejs"); %>

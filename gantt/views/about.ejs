@@ -1,0 +1,16 @@
+<%- include("partials/header.ejs"); %>
+<div class="about-body">
+    <% if (locals.messages) { %>
+        <% for (let i=0; i<messages.length; i++) { %>
+            <h1><%= messages[i].subject %></h1>
+            <ul>
+                <li><%= messages[i].name %></li>
+                <li><%= messages[i].email %></li>
+            </ul>
+            <p><%= messages[i].message %></p>
+            <hr>
+        <% } %>
+    <% } %>
+</div>
+
+<%- include("partials/footer.ejs"); %>

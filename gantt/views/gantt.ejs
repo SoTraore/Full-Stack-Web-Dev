@@ -1,0 +1,49 @@
+<%- include("partials/header.ejs"); %>
+
+<div class="home-body">
+    <% if (locals.operation && locals.dateDebut && locals.dateFinSouhaitee && locals.count) { %>
+        <h1>Gantt Prévisionnel</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Opération</th><th>Date de début</th><th>Date de fin réelle</th><th>Semaine de début</th><th>Semaine de fin réelle</th>
+                </tr>
+            </thead>
+            <tbody>
+        <% for (let i=0; i<count; i++) { %>
+            <tr>
+                <td><%= operation[i] %></td>
+                <td><%= dateDebut[i] %></td>
+                <td><%= dateFinSouhaitee[i] %></td>
+                <td><%= weekDebut[i] %></td>
+                <td><%= weekFinSouhaitee[i] %></td>
+            </tr>
+        <% } %>
+            </tbody>
+        </table>
+    <% } %>
+    
+    <% if (locals.operation && locals.dateDebut && locals.dateFinReelle && locals.count) { %>
+        <h1>Gantt réel</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Opération</th><th>Date de début</th><th>Date de fin souhaitée</th><th>Semaine de début</th><th>Semaine de fin souhaitée</th>
+                </tr>
+            </thead>
+            <tbody>
+        <% for (let i=0; i<count; i++) { %>
+            <tr>
+                <td><%= operation[i] %></td>
+                <td><%= dateDebut[i] %></td>
+                <td><%= dateFinReelle[i] %></td>
+                <td><%= weekDebut[i] %></td>
+                <td><%= weekFinReelle[i] %></td>
+            </tr>
+        <% } %>
+        </tbody>
+    </table>
+    <% } %>
+</div>
+
+<%- include("partials/footer.ejs"); %>
