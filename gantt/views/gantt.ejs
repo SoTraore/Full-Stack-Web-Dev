@@ -2,7 +2,7 @@
 <%- include("partials/side.ejs") %>
 <div class="home-body" id="capture-area">
     <br>
-    <% if (locals.operation && locals.dateDebut && locals.dateFinSouhaitee && locals.count) { %>
+    <% if (locals.data && locals.count) { %>
         <h1>Gantt Prévisionnel</h1>
         <table>
             <thead>
@@ -11,20 +11,20 @@
                 </tr>
             </thead>
             <tbody>
-        <% for (let i=0; i<count; i++) { %>
+        <% data.forEach((elt)=> { %>
             <tr>
-                <td><%= operation[i] %></td>
-                <td><%= dateDebut[i] %></td>
-                <td><%= dateFinSouhaitee[i] %></td>
-                <td><%= weekDebut[i] %></td>
-                <td><%= weekFinSouhaitee[i] %></td>
+                <td><%= elt.operation %></td>
+                <td><%= elt.dateDebut %></td>
+                <td><%= elt.dateFinSouhaitee %></td>
+                <td><%= elt.weekDebut %></td>
+                <td><%= elt.weekFinSouhaitee %></td>
             </tr>
-        <% } %>
+        <% }) %>
             </tbody>
         </table>
     <% } %>
-    
-    <% if (locals.operation && locals.dateDebut && locals.dateFinReelle && locals.count) { %>
+    <br>
+    <% if (locals.data && locals.count) { %>
         <h1>Gantt réel</h1>
         <table>
             <thead>
@@ -33,23 +33,23 @@
                 </tr>
             </thead>
             <tbody>
-        <% for (let i=0; i<count; i++) { %>
+        <% data.forEach((elt)=>{ %>
             <tr>
-                <% if (weekFinReelle[i] > weekFinSouhaitee[i]) { %>
-                    <td class="red"><%= operation[i] %></td>
-                    <td class="red"><%= dateDebut[i] %></td>
-                    <td class="red"><%= dateFinReelle[i] %></td>
-                    <td class="red"><%= weekDebut[i] %></td>
-                    <td class="red"><%= weekFinReelle[i] %></td>
+                <% if (elt.weekFinReelle > elt.weekFinSouhaitee) { %>
+                    <td class="red"><%= elt.operation %></td>
+                    <td class="red"><%= elt.dateDebut %></td>
+                    <td class="red"><%= elt.dateFinReelle %></td>
+                    <td class="red"><%= elt.weekDebut %></td>
+                    <td class="red"><%= elt.weekFinReelle %></td>
                 <% } else { %>
-                    <td class="green"><%= operation[i] %></td>
-                    <td class="green"><%= dateDebut[i] %></td>
-                    <td class="green"><%= dateFinReelle[i] %></td>
-                    <td class="green"><%= weekDebut[i] %></td>
-                    <td class="green"><%= weekFinReelle[i] %></td>
+                    <td class="green"><%= elt.operation %></td>
+                    <td class="green"><%= elt.dateDebut %></td>
+                    <td class="green"><%= elt.dateFinReelle %></td>
+                    <td class="green"><%= elt.weekDebut %></td>
+                    <td class="green"><%= elt.weekFinReelle %></td>
                 <% } %>
             </tr>
-        <% } %>
+        <% }); %>
         </tbody>
     </table>
     <% } %>

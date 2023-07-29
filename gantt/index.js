@@ -1,12 +1,10 @@
 import express from "express"
 import bodyParser from "body-parser"
 import {getISOWeekNumber} from "./function.js"
+import { Gantt } from "./database.js";
 
 let app = express();
 let port = 3000;
-
-
-let messages = [];
 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended:true}));
@@ -37,38 +35,41 @@ app.post("/contact", (req,res)=>{
     res.render('about.ejs', {messages});
 });
 
-app.post("/create", (req, res) => {
-    let operation = [];
-    let dateDebut = [];
-    let dateFinReelle = [];
-    let dateFinSouhaitee = [];
-    let weekDebut = [];
-    let weekFinReelle = [];
-    let weekFinSouhaitee = [];
-
+app.post("/create", async (req, res) => {
     let count = parseInt(req.body.rowCount);
 
     for (let i = 0; i < count; i++) {
-        operation.push(req.body[`operation${i}`]);
-        dateDebut.push(req.body[`dateDebut${i}`]);
-        weekDebut.push(getISOWeekNumber(new Date(req.body[`dateDebut${i}`])));
-        dateFinSouhaitee.push(req.body[`dateFinSouhaitee${i}`]);
-        weekFinSouhaitee.push(getISOWeekNumber(new Date(req.body[`dateFinSouhaitee${i}`])));
-        dateFinReelle.push(req.body[`dateFinReelle${i}`]);
-        weekFinReelle.push(getISOWeekNumber(new Date(req.body[`dateFinReelle${i}`])));
+        let elt = new Gantt({
+            operation: req.body[`operation${i}`],
+            dateDebut: req.body[`dateDebut${i}`],
+            dateFinReelle: req.body[`dateFinReelle${i}`],
+            dateFinSouhaitee: req.body[`dateFinSouhaitee${i}`],
+            weekDebut: getISOWeekNumber(new Date(req.body[`dateDebut${i}`])),
+            weekFinReelle: getISOWeekNumber(new Date(req.body[`dateFinReelle${i}`])),
+            weekFinSouhaitee: getISOWeekNumber(new Date(req.body[`dateFinSouhaitee${i}`])),
+        });
+
+        try {
+            await elt.save();
+            console.log("New element added!");
+        } catch (error) {
+            console.error("Error saving element:", error);
+        }
     }
 
-    res.render('gantt.ejs', {
-        operation,
-        dateDebut,
-        dateFinReelle,
-        dateFinSouhaitee,
-        count,
-        weekDebut,
-        weekFinReelle,
-        weekFinSouhaitee
-    });
+    try {
+        const data = await Gantt.find();
+        console.log(data);
+        res.render('gantt.ejs', {
+            data,
+            count
+        });
+    } catch (error) {
+        console.error("Error fetching Gantt data:", error);
+        res.status(500).send("Internal Server Error");
+    }
 });
+
 
 
 app.listen(port, ()=>{
