@@ -2,59 +2,72 @@
 <%- include("partials/side.ejs") %>
 <div class="home-body" id="capture-area">
     <br>
-    <% if (locals.data && locals.count) { %>
+    <% if (locals.messages) { %>
         <h1>Gantt Prévisionnel</h1>
         <table>
             <thead>
                 <tr>
-                    <th>Opération</th><th>Date de début</th><th>Date de fin souhaitée</th><th>Semaine de début</th><th>Semaine de fin souhaitée</th>
+                    <th>Opération</th>
+                    <th>Date de début</th>
+                    <th>Date de fin souhaitée</th>
+                    <th>Semaine de début</th>
+                    <th>Semaine de fin souhaitée</th>
                 </tr>
             </thead>
             <tbody>
-        <% data.forEach((elt)=> { %>
-            <tr>
-                <td><%= elt.operation %></td>
-                <td><%= elt.dateDebut %></td>
-                <td><%= elt.dateFinSouhaitee %></td>
-                <td><%= elt.weekDebut %></td>
-                <td><%= elt.weekFinSouhaitee %></td>
-            </tr>
-        <% }) %>
+                <% for (let i = 0; i < messages.length; i++) { %>
+                    <% for (let j = 0; j < messages[i].data.length; j++) { %>
+                        <tr>
+                            <td><%= messages[i].data[j].operation %></td>
+                            <td><%= messages[i].data[j].dateDebut %></td>
+                            <td><%= messages[i].data[j].dateFinSouhaitee %></td>
+                            <td><%= messages[i].data[j].weekDebut %></td>
+                            <td><%= messages[i].data[j].weekFinSouhaitee %></td>
+                        </tr>
+                    <% } %>
+                <% } %>
             </tbody>
         </table>
     <% } %>
     <br>
-    <% if (locals.data && locals.count) { %>
+    <% if (locals.messages) { %>
         <h1>Gantt réel</h1>
         <table>
             <thead>
                 <tr>
-                    <th>Opération</th><th>Date de début</th><th>Date de fin réelle</th><th>Semaine de début</th><th>Semaine de fin réelle</th>
+                    <th>Opération</th>
+                    <th>Date de début</th>
+                    <th>Date de fin réelle</th>
+                    <th>Semaine de début</th>
+                    <th>Semaine de fin réelle</th>
                 </tr>
             </thead>
             <tbody>
-        <% data.forEach((elt)=>{ %>
-            <tr>
-                <% if (elt.weekFinReelle > elt.weekFinSouhaitee) { %>
-                    <td class="red"><%= elt.operation %></td>
-                    <td class="red"><%= elt.dateDebut %></td>
-                    <td class="red"><%= elt.dateFinReelle %></td>
-                    <td class="red"><%= elt.weekDebut %></td>
-                    <td class="red"><%= elt.weekFinReelle %></td>
-                <% } else { %>
-                    <td class="green"><%= elt.operation %></td>
-                    <td class="green"><%= elt.dateDebut %></td>
-                    <td class="green"><%= elt.dateFinReelle %></td>
-                    <td class="green"><%= elt.weekDebut %></td>
-                    <td class="green"><%= elt.weekFinReelle %></td>
+                <% for (let i = 0; i < messages.length; i++) { %>
+                    <% for (let j = 0; j < messages[i].data.length; j++) { %>
+                        <tr>
+                            <% if (messages[i].data[j].weekFinReelle > messages[i].data[j].weekFinSouhaitee) { %>
+                                <td class="red"><%= messages[i].data[j].operation %></td>
+                                <td class="red"><%= messages[i].data[j].dateDebut %></td>
+                                <td class="red"><%= messages[i].data[j].dateFinReelle %></td>
+                                <td class="red"><%= messages[i].data[j].weekDebut %></td>
+                                <td class="red"><%= messages[i].data[j].weekFinReelle %></td>
+                            <% } else { %>
+                                <td class="green"><%= messages[i].data[j].operation %></td>
+                                <td class="green"><%= messages[i].data[j].dateDebut %></td>
+                                <td class="green"><%= messages[i].data[j].dateFinReelle %></td>
+                                <td class="green"><%= messages[i].data[j].weekDebut %></td>
+                                <td class="green"><%= messages[i].data[j].weekFinReelle %></td>
+                            <% } %>
+                        </tr>
+                    <% } %>
                 <% } %>
-            </tr>
-        <% }); %>
-        </tbody>
-    </table>
+            </tbody>
+        </table>
     <% } %>
 </div>
 <br>
+
 
 
 <!-- An empty canvas element to draw the captured image -->

@@ -1,12 +1,13 @@
 import express from "express";
 import bodyParser from "body-parser";
-import { Gantt, Users } from "./database.js";
+import { Gantt, Users, Messages } from "./database.js";
 import { getISOWeekNumber } from "./function.js";
 import session from "express-session";
  
 
 const app = express();
 const port = 3000;
+let gantt_id = 1;
 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -27,12 +28,7 @@ app.use(
 app.set('view engine', 'ejs'); // Set EJS as the template engine
 
 app.get('/', (req, res)=>{
-    if (req.session.user) {
-        res.render("index.ejs");
-    }
-    else {
-        res.render("login.ejs");
-    }
+    res.render("welcome_page.ejs");
 });
 
 app.get('/home', (req, res)=>{
@@ -119,20 +115,6 @@ app.get('/logout', (req, res) => {
     });
 });
 
-// app.post("/newUser", (req,res)=>{
-//     let {username, password} = req.body ;
-//     let elt = Users.find({username : {"username":username}}) ;
-//     let message = "";
-//     if (password.length < 8 || username.length < 8) {
-//         message = "Invalid input";
-//         res.render("login.ejs", {message});
-//     }
-//     else {
-//         message = "Users created succefully ;-)";
-//         res.render("index.ejs", {message});
-//     }
-// });
-
 app.get("/create", (req, res)=>{
     if (req.session.user){
         res.render('create.ejs');
@@ -144,7 +126,7 @@ app.get("/create", (req, res)=>{
 
 app.post("/create", async (req, res) => {
     if (req.session.user) {
-        let count = parseInt(req.body.rowCount), elt;
+        let count = parseInt(req.body.rowCount), elt = [];
         for (let i = 0; i < count; i++) {
             elt.push({
                 operation: req.body[`operation${i}`],
@@ -157,11 +139,7 @@ app.post("/create", async (req, res) => {
             });
         }
         
-        let newItem = new Gantt({
-            username : "helloWorld",
-            gantt_id : "superpassword",
-            data : elt,
-        });
+        let newItem = new Gantt({username : req.session.user,gantt_id : gantt_id,data : elt});
     
         try {
             await newItem.save();
@@ -171,12 +149,9 @@ app.post("/create", async (req, res) => {
         }
     
         try {
-            const data = await Gantt.find();
-            console.log(data);
-            res.render('gantt.ejs', {
-                data,
-                count
-            });
+            const messages = await Gantt.find();
+            console.log(messages);
+            res.render('gantt.ejs', {messages,count});
         } catch (error) {
             console.error("Error fetching Gantt data:", error);
             res.status(500).send("Internal Server Error");
@@ -187,9 +162,16 @@ app.post("/create", async (req, res) => {
     }
 });
 
-app.get("/about", (req, res)=>{
+app.get("/about", async (req, res)=>{
     if (req.session.user){
-        res.render('about.ejs', {messages});
+        // let data = Users.find({})
+        let messages = await Messages.find({email:req.session.user.email}).limit(10);
+        if (messages) {
+            res.render('about.ejs', {messages});
+        }
+        else {
+            res.redirect('/contact');
+        }
     }
     else {
         res.render("login.ejs");
@@ -205,11 +187,33 @@ app.get("/contact", (req,res)=>{
     }
 });
 
-app.post("/contact", (req,res)=>{
+app.post("/contact", async (req,res)=>{
     if (req.session.user) {
-        let data = req.body ;
-        messages.push(data);
-        res.render('about.ejs', {messages});
+        let {name, subject, message, email} = req.body ;
+        try {
+            let newItem = new Messages({
+                name: name,
+                email: email,
+                subject: subject,
+                message: message,
+            }) ;
+            await newItem.save().then(()=>{
+                console.log("The messages has been saved.");
+            });
+        }
+        catch (error) {
+            console.log(error);
+        }
+
+        try {
+            let messages = await Messages.find();
+            console.log(messages);
+            res.render('about.ejs', {messages});
+        }
+        catch (error) {
+            console.log(error);
+        }
+
     }
     else {
         res.render("login.ejs");

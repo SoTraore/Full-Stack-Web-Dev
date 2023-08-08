@@ -9,8 +9,8 @@ const ganttSchema = new Schema({
     data : [{
         operation : String,
         dateDebut : String,
-        dateFinReelle : Date,
-        dateFinSouhaitee : Date,
+        dateFinReelle : String,
+        dateFinSouhaitee : String,
         weekFinSouhaitee : Number,
         weekFinReelle : Number,
         weekDebut : Number,
@@ -24,7 +24,15 @@ const usersSchema = new Schema({
     country : String,
 });
 
+const messageSchema = new Schema({
+    message : String,
+    email : String,
+    name : String,
+    subject : String
+});
+
 let Gantt = mongoose.model('gantt', ganttSchema);
 let Users = mongoose.model('users', usersSchema);
+let Messages = mongoose.model('messages', messageSchema);
 
-export { Gantt, Users } ;
+export { Gantt, Users, Messages } ;

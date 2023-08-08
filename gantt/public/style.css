@@ -107,3 +107,8 @@ ul {
 .side-bar li button:hover {
     background-color: #45a049;
 }
+
+.sideBar {
+    float: left;
+    background-color: #F8F0E5;
+}
