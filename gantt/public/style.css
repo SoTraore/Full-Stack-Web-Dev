@@ -34,7 +34,7 @@ th:first-child {
     width: 80%;
     margin-left: 20%;
     padding: 5% 5%;
-    background-color: #f5f5f5;
+    background-color: #D8D9DA;
 }
 
 .side-bar {
@@ -52,6 +52,10 @@ th:first-child {
 
 .green {
     background-color: #4CAF50;
+}
+
+.white {
+    background-color: white;
 }
 
 .accountBody {
@@ -94,7 +98,7 @@ ul {
 /* Style the buttons */
 .side-bar li button {
     padding: 10px 15px;
-    background-color: #4CAF50;
+    background-color: #001C30;
     color: white;
     border: none;
     border-radius: 5px;
@@ -108,7 +112,14 @@ ul {
     background-color: #45a049;
 }
 
+
 .sideBar {
     float: left;
     background-color: #F8F0E5;
+    width: 15%;
+}
+
+.header_body {
+    background-color: #001C30;
+    color: white;
 }

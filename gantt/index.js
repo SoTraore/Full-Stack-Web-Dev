@@ -115,31 +115,57 @@ app.get('/logout', (req, res) => {
     });
 });
 
-app.get("/create", (req, res)=>{
+app.get("/gantt", (req, res)=>{
     if (req.session.user){
-        res.render('create.ejs');
+        res.render('createGantt.ejs');
     }
     else {
         res.render("login.ejs");
     }
 });
 
-app.post("/create", async (req, res) => {
+app.post("/gantt", async (req, res) => {
     if (req.session.user) {
         let count = parseInt(req.body.rowCount), elt = [];
+
+        let debut = 1000;
+        let finReel = 0;
+        let finSouh = 0;
+
         for (let i = 0; i < count; i++) {
+            let debutCur = getISOWeekNumber(new Date(req.body[`dateDebut${i}`]));
+            let finReelCur = getISOWeekNumber(new Date(req.body[`dateFinReelle${i}`]));
+            let finSouhCur = getISOWeekNumber(new Date(req.body[`dateFinSouhaitee${i}`]));
             elt.push({
                 operation: req.body[`operation${i}`],
                 dateDebut: req.body[`dateDebut${i}`],
                 dateFinReelle: req.body[`dateFinReelle${i}`],
                 dateFinSouhaitee: req.body[`dateFinSouhaitee${i}`],
-                weekDebut: getISOWeekNumber(new Date(req.body[`dateDebut${i}`])),
-                weekFinReelle: getISOWeekNumber(new Date(req.body[`dateFinReelle${i}`])),
-                weekFinSouhaitee: getISOWeekNumber(new Date(req.body[`dateFinSouhaitee${i}`])),
+                weekDebut: debutCur,
+                weekFinReelle: finReelCur,
+                weekFinSouhaitee: finSouhCur,
             });
+            if (debut > debutCur) {
+                debut = debutCur; 
+            }
+            if (finReel < finReelCur) {
+                finReel = finReelCur;
+            }
+            if (finSouh < finSouhCur) {
+                finSouh = finSouhCur;
+            }
         }
         
-        let newItem = new Gantt({username : req.session.user,gantt_id : gantt_id,data : elt});
+        const currentDate = new Date();
+        const version = currentDate.toISOString();
+
+        const userData = req.session.user ? req.session.user.data : null;
+
+        let newItem = new Gantt({
+            user: userData,
+            version: version,
+            data: elt
+        });
     
         try {
             await newItem.save();
@@ -149,9 +175,9 @@ app.post("/create", async (req, res) => {
         }
     
         try {
-            const messages = await Gantt.find();
+            const messages = await Gantt.find({version: version});
             console.log(messages);
-            res.render('gantt.ejs', {messages,count});
+            res.render('classic_gantt.ejs', {messages, count, debut, finReel, finSouh});
         } catch (error) {
             console.error("Error fetching Gantt data:", error);
             res.status(500).send("Internal Server Error");
@@ -217,6 +243,69 @@ app.post("/contact", async (req,res)=>{
     }
     else {
         res.render("login.ejs");
+    }
+});
+
+app.get("/planning", (req, res)=> {
+    if (req.session.user) {
+        res.render("./planning/planning.ejs");
+    }
+    else {
+        res.redirect('/login');
+    }
+});
+
+app.get('/cours', (req, res)=>{
+    if (req.session.user) {
+        res.render("./menu/cours.ejs");
+    }
+    else {
+        res.redirect('/login');
+    }
+});
+
+app.get('/archives', (req, res)=>{
+    if (req.session.user) {
+        res.render("./menu/archives.ejs");
+    }
+    else {
+        res.redirect('/login');
+    }
+});
+
+app.get('/formations', (req, res)=>{
+    if (req.session.user) {
+        res.render("./menu/formations.ejs");
+    }
+    else {
+        res.redirect('/login');
+    }
+});
+
+app.get('/quiz', (req, res)=>{
+    if (req.session.user) {
+        res.render("./menu/quiz.ejs");
+    }
+    else {
+        res.redirect('/login');
+    }
+});
+
+app.get('/events', (req, res)=>{
+    if (req.session.user) {
+        res.render("./menu/events.ejs");
+    }
+    else {
+        res.redirect('/login');
+    }
+});
+
+app.get('/offres', (req, res)=>{
+    if (req.session.user) {
+        res.render("./menu/offres.ejs");
+    }
+    else {
+        res.redirect('/login');
     }
 });
 

@@ -1,0 +1,121 @@
+<%- include("partials/header.ejs"); %>
+<%- include("partials/side.ejs") %>
+<div class="home-body" id="capture-area">
+    <br>
+    <% if (locals.messages) { %>
+        <h1>Gantt Prévisionnel</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Titles \ Weeks</th>
+                    <% for (let i=debut; i<finSouh; i++) { %>
+                    <th>W<%=i%></th>
+                    <% } %>
+                </tr>
+            </thead>
+            <tbody>
+                <% for (let i = 0; i < messages.length; i++) { %>
+                    <% for (let j = 0; j < messages[i].data.length; j++) { %>
+                        <tr>
+                            <td><%= messages[i].data[j].operation %></td>
+                            <% for (let k=debut; k<finSouh; k++) { %>
+                            <% if (k >= messages[i].data[j].weekDebut && k <= messages[i].data[j].weekFinSouhaitee) { %>
+                            <td class="green"></td>
+                            <% } else { %>
+                            <td class="white"></td>
+                            <% } %>
+                            <% } %>
+                        </tr>
+                    <% } %>
+                <% } %>
+            </tbody>
+        </table>
+    <% } %>
+    <br>
+    <% if (locals.messages) { %>
+        <h1>Gantt réel</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Titles \ Weeks</th>
+                    <% for (let i=debut; i<finReel; i++) { %>
+                    <th>W<%=i%></th>
+                    <% } %>
+                </tr>
+            </thead>
+            <tbody>
+                <% for (let i = 0; i < messages.length; i++) { %>
+                    <% for (let j = 0; j < messages[i].data.length; j++) { %>
+                        <tr>
+                            <td><%= messages[i].data[j].operation %></td>
+                            <% for (let k=debut; k<finReel; k++) { %>
+                            <% if (k >= messages[i].data[j].weekDebut && k <= messages[i].data[j].weekFinReelle) { %>
+                            <td class="green"></td>
+                            <% } else { %>
+                            <td class="white"></td>
+                            <% } %>
+                            <% } %>
+                        </tr>
+                    <% } %>
+                <% } %>
+            </tbody>
+        </table>
+    <% } %>
+</div>
+<br>
+
+
+
+<!-- An empty canvas element to draw the captured image -->
+<canvas id="canvas" style="display: none;"></canvas>
+
+<script>
+    // Function to capture the element with same quality
+    function captureElement() {
+        const captureArea = document.getElementById('capture-area');
+
+        html2canvas(captureArea, {
+            useCORS: true, // Enable CORS to capture external images
+            scale: 2, // Use scale of 1 for original resolution
+        }).then(canvas => {
+            // Create a new window to display the captured image
+            const newWindow = window.open();
+            newWindow.document.body.appendChild(canvas);
+        });
+    }
+
+    // Call the captureElement function when needed, e.g., on button click
+    const captureButton = document.getElementById('capture-button');
+    captureButton.addEventListener('click', captureElement);
+
+    // Function to download the captured image
+    function downloadImage() {
+        const captureArea = document.getElementById('capture-area');
+
+        html2canvas(captureArea, {
+            useCORS: true, // Enable CORS to capture external images
+            scale: 1, // Use scale of 1 for original resolution
+        }).then(canvas => {
+            // Convert the canvas to a data URL (PNG format)
+            const dataURL = canvas.toDataURL('image/png');
+
+            // Create a link and simulate a click to trigger the download
+            const link = document.createElement('a');
+            link.href = dataURL;
+            link.download = 'captured_image.png'; // Set the filename for the download
+            link.click();
+        });
+    }
+
+    // Call the downloadImage function when the button is clicked
+    const downloadButton = document.getElementById('download-button');
+    downloadButton.addEventListener('click', downloadImage);
+
+    // Function to download the printable content as PDF
+    function downloadPDF() {
+        // Open the print dialog to display the printable content
+        window.print();
+    }
+</script>
+
+<%- include("partials/footer.ejs"); %>
