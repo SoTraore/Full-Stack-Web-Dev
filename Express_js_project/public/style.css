@@ -1,0 +1,18 @@
+
+ul {
+  float: left;
+  list-style: none;
+}
+
+li {
+  border: 1px black solid;
+  float: left;
+  margin-right:  20px;
+  margin-left: 0;
+  padding: 10px;
+}
+
+.menu {
+  display:inline-block ;
+}
+  
