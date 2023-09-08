@@ -1,5 +1,6 @@
 import express from "express"
 import bodyParser from "body-parser"
+import { Articles } from "./database.js"
 
 
 let app = express()
